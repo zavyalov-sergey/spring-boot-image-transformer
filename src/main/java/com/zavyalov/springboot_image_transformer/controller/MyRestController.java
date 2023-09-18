@@ -1,6 +1,9 @@
 package com.zavyalov.springboot_image_transformer.controller;
 
 import com.zavyalov.springboot_image_transformer.service.ImageModelService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/process")
+@Tag(name = "MyRestController", description = "Endpoints for image processing operations")
 public class MyRestController {
     @Autowired
     private ImageModelService imageModelService;
@@ -26,7 +30,8 @@ public class MyRestController {
 
     @PostMapping("/flip-h")
     @ResponseBody
-    public  byte[] horizontalFlip(@RequestParam("file") MultipartFile imageFile) {
+    @Operation(summary = "The method flips the image horizontally.")
+    public  byte[] horizontalFlip(@RequestPart(name = "file") MultipartFile imageFile) {
         if (imageFile.isEmpty()) {
             return null;
         }
@@ -37,6 +42,7 @@ public class MyRestController {
 
     @PostMapping("/flip-v")
     @ResponseBody
+    @Operation(summary = "This method flips the image vertically.")
     public byte[] verticalFlip(@RequestParam("file") MultipartFile imageFile) {
         if (imageFile.isEmpty()) {
             return null;
@@ -49,6 +55,7 @@ public class MyRestController {
 
     @PostMapping("/rotate-cw")
     @ResponseBody
+    @Operation(summary = "This method rotates the image 90 degrees clockwise.")
     public byte[] rotateCW(@RequestParam("file") MultipartFile imageFile) {
         if (imageFile.isEmpty()) {
             return null;
@@ -61,6 +68,7 @@ public class MyRestController {
 
     @PostMapping("/rotate-cww")
     @ResponseBody
+    @Operation(summary = "This method rotates the image 90 degrees counterclockwise.")
     public byte[] RotateCWW(@RequestParam("file") MultipartFile imageFile) {
         if (imageFile.isEmpty()) {
             return null;
@@ -73,6 +81,7 @@ public class MyRestController {
 
     @PostMapping("/compress")
     @ResponseBody
+    @Operation(summary = "This method compresses the image.")
     public byte[] compress(@RequestParam("file") MultipartFile imageFile, @RequestParam("height") int height, @RequestParam("width") int width) {
         if (imageFile.isEmpty() && height > 0 && width > 0) {
             return null;
@@ -86,6 +95,7 @@ public class MyRestController {
 
     @PostMapping("/crop")
     @ResponseBody
+    @Operation(summary = "This method crops the image.")
     public byte[] crop(@RequestParam("file") MultipartFile imageFile, @RequestParam("coords") int[] coords) {
         if (imageFile.isEmpty()) {
             return null;
