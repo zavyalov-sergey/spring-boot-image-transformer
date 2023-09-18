@@ -3,6 +3,7 @@ package com.zavyalov.springboot_image_transformer.controller;
 import com.zavyalov.springboot_image_transformer.service.ImageModelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,20 +12,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
-@RequestMapping("/process")
+@RequestMapping(value = "/process", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 @Tag(name = "MyRestController", description = "Endpoints for image processing operations")
 public class MyRestController {
     @Autowired
     private ImageModelService imageModelService;
 
-
-    @PostMapping(value = "/flip-h", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/flip-h")
     @ResponseBody
     @Operation(summary = "The method flips the image horizontally.")
-    public ResponseEntity<byte[]> horizontalFlip(@RequestPart(name = "file") MultipartFile imageFile) {
-        if (imageFile.isEmpty()) {
-            return null;
-        }
+    public ResponseEntity<byte[]> horizontalFlip(@RequestPart(name = "file") @NotNull MultipartFile imageFile) {
         byte[] outputImage = imageModelService.horizontalFlip(imageFile);
 
         return ResponseEntity.ok()
@@ -35,111 +32,55 @@ public class MyRestController {
     @PostMapping("/flip-v")
     @ResponseBody
     @Operation(summary = "This method flips the image vertically.")
-    public byte[] verticalFlip(@RequestParam("file") MultipartFile imageFile) {
-        if (imageFile.isEmpty()) {
-            return null;
-        }
+    public ResponseEntity<byte[]> verticalFlip(@RequestParam("file") @NotNull MultipartFile imageFile) {
         byte[] outputImage = imageModelService.verticalFlip(imageFile);
 
-        return outputImage;
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(outputImage);
     }
-
 
     @PostMapping("/rotate-cw")
     @ResponseBody
     @Operation(summary = "This method rotates the image 90 degrees clockwise.")
-    public byte[] rotateCW(@RequestParam("file") MultipartFile imageFile) {
-        if (imageFile.isEmpty()) {
-            return null;
-        }
+    public ResponseEntity<byte[]> rotateCW(@RequestParam("file") @NotNull MultipartFile imageFile) {
         byte[] outputImage = imageModelService.rotateCW(imageFile);
 
-        return outputImage;
-
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(outputImage);
     }
 
     @PostMapping("/rotate-cww")
     @ResponseBody
     @Operation(summary = "This method rotates the image 90 degrees counterclockwise.")
-    public byte[] RotateCWW(@RequestParam("file") MultipartFile imageFile) {
-        if (imageFile.isEmpty()) {
-            return null;
-        }
+    public ResponseEntity<byte[]> RotateCWW(@RequestParam("file") @NotNull MultipartFile imageFile) {
         byte[] outputImage = imageModelService.rotateCWW(imageFile);
 
-        return outputImage;
-
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(outputImage);
     }
 
     @PostMapping("/compress")
     @ResponseBody
     @Operation(summary = "This method compresses the image.")
-    public byte[] compress(@RequestParam("file") MultipartFile imageFile, @RequestParam("height") int height, @RequestParam("width") int width) {
-        if (imageFile.isEmpty() && height > 0 && width > 0) {
-            return null;
-        }
+    public ResponseEntity<byte[]> compress(@RequestParam("file") @NotNull MultipartFile imageFile, @RequestParam("height") int height, @RequestParam("width") int width) {
         byte[] outputImage = imageModelService.compress(imageFile, height, width);
 
-        return outputImage;
-
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(outputImage);
     }
-
 
     @PostMapping("/crop")
     @ResponseBody
     @Operation(summary = "This method crops the image.")
-    public byte[] crop(@RequestParam("file") MultipartFile imageFile, @RequestParam("coords") int[] coords) {
-        if (imageFile.isEmpty()) {
-            return null;
-        }
+    public ResponseEntity<byte[]> crop(@RequestParam("file") @NotNull MultipartFile imageFile, @RequestParam("coords") int[] coords) {
         byte[] outputImage = imageModelService.crop(imageFile, coords);
 
-        return outputImage;
-
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(outputImage);
     }
-
-
-
-
-
-/*
-    @PostMapping("/uploadAndProcess")
-    @ResponseBody
-    public byte[] uploadAndProcessImage(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            // Обработка случая, когда файл не был выбран
-            return null;
-        }
-
-        try {
-            // Читаем изображение из MultipartFile
-            BufferedImage originalImage = ImageIO.read(file.getInputStream());
-
-            // Здесь можно выполнить необходимую обработку изображения, например, изменение размера,
-            // фильтры и т.д.
-            // Пример изменения размера:
-            int newWidth = 200; // Новая ширина
-            int newHeight = 200; // Новая высота
-            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-            resizedImage.createGraphics().drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-
-            // Сохраняем обработанное изображение в формате PNG в массив байтов
-            byte[] processedImageBytes;
-            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                ImageIO.write(resizedImage, "png", baos);
-                processedImageBytes = baos.toByteArray();
-            }
-
-            // Возвращаем обработанное изображение
-            System.out.println("true");
-            return processedImageBytes;
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Обработка ошибки
-            return null;
-        }
-    }
-*/
-
 }
-
