@@ -1,24 +1,14 @@
 package com.zavyalov.springboot_image_transformer.controller;
 
 import com.zavyalov.springboot_image_transformer.service.ImageModelService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/process")
@@ -28,16 +18,18 @@ public class MyRestController {
     private ImageModelService imageModelService;
 
 
-    @PostMapping("/flip-h")
+    @PostMapping(value = "/flip-h", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseBody
     @Operation(summary = "The method flips the image horizontally.")
-    public  byte[] horizontalFlip(@RequestPart(name = "file") MultipartFile imageFile) {
+    public ResponseEntity<byte[]> horizontalFlip(@RequestPart(name = "file") MultipartFile imageFile) {
         if (imageFile.isEmpty()) {
             return null;
         }
         byte[] outputImage = imageModelService.horizontalFlip(imageFile);
 
-        return outputImage;
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(outputImage);
     }
 
     @PostMapping("/flip-v")
