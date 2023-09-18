@@ -64,7 +64,8 @@ public class MyRestController {
 
     @PostMapping("/compress")
     @ResponseBody
-    @Operation(summary = "This method compresses the image.")
+    @Operation(summary = "This method compresses the image."
+            , description = "Compresses the input image to reduce its file size while maintaining visual quality. The compression operation requires an array of 2 integers representing the height and width of the new image.")
     public ResponseEntity<byte[]> compress(@RequestParam("file") @NotNull MultipartFile imageFile, @RequestParam("height") int height, @RequestParam("width") int width) {
         byte[] outputImage = imageModelService.compress(imageFile, height, width);
 
@@ -75,7 +76,8 @@ public class MyRestController {
 
     @PostMapping("/crop")
     @ResponseBody
-    @Operation(summary = "This method crops the image.")
+    @Operation(summary = "This method crops the image."
+            , description = "Crops the input image based on the provided parameters. The cropping operation requires an array of 4 integers representing (x, y) coordinates of the top-left corner and the width and height of the cropped region.")
     public ResponseEntity<byte[]> crop(@RequestParam("file") @NotNull MultipartFile imageFile, @RequestParam("coords") int[] coords) {
         byte[] outputImage = imageModelService.crop(imageFile, coords);
 
