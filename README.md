@@ -23,7 +23,7 @@ The Image Transformer API offers the following endpoints:
 - [] add jpeg
 
 
-##Contact
+## Contact
 Sergey Zavyalov - i@fatalloo.ru
 
-Project Link: https://github.com/zavyalov-sergey/springboot_image_transformer
+Project [LINK.](https://github.com/zavyalov-sergey/springboot_image_transformer)
